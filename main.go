@@ -1,37 +1,16 @@
-// +build ignore
-
 package main
 
 import (
-	"context"
-	"fmt"
+	"appointy/api"
+	"appointy/api/user"
 	"log"
 	"net/http"
-	"time"
-
-	"go.mongodb.org/mongo-driver/mongo"
-	"go.mongodb.org/mongo-driver/mongo/options"
 )
 
-func handler(w http.ResponseWriter, r *http.Request) {
-	fmt.Fprintf(w, "Hi there, I love %s!", r.URL.Path[1:])
-}
-
 func main() {
-	ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
-
-	defer cancel()
-
-	// client, err := mongo.NewClient(options.Client().ApplyURI("mongodb://localhost:27017"))
-	client, error := mongo.NewClient(options.Client().ApplyURI("mongodb://localhost:27017"))
-	error = client.Connect(ctx)
-
-	//Checking the connection
-	error = client.Ping(context.TODO(), nil)
-	if error != nil {
-		log.Fatal(error)
-	}
-	fmt.Println("Database connected")
-	http.HandleFunc("/", handler)
+	// http.HandleFunc("/api", Handler)
+	http.Handle("/api/meeting", &user.UserAPI{})
+	http.Handle("/api/user", &user.UserAPI{})
+	http.Handle("/api/", &api.API{})
 	log.Fatal(http.ListenAndServe(":8080", nil))
 }
