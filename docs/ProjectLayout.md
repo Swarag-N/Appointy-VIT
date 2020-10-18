@@ -56,6 +56,3 @@ Routes
   - From User data and Post Data
     - if any of `StartTime` or `Endtime` Lies between `[startTime, endTIme]`
       - reject
-
-
-
