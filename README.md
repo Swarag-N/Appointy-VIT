@@ -33,6 +33,10 @@
 
 [Blog] https://subscription.packtpub.com/book/application_development/9781786468666/1/ch01lvl1sec10/routing-in-net-http
 
+[Blog] https://www.thepolyglotdeveloper.com/2019/02/developing-restful-api-golang-mongodb-nosql-database/
+
+[Blog] https://golangbot.com/structs/
+
 [DOCS] https://docs.mongodb.com/guides/server/read/
 
 [DOCS] https://github.com/bear2u/golang-api-server-mongo
