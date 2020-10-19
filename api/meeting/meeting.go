@@ -7,6 +7,7 @@ import (
 	"fmt"
 	"log"
 	"net/http"
+	"time"
 
 	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/bson/primitive"
@@ -40,15 +41,25 @@ type Meeting struct {
 	Participants []Participant       `json:"Participants" bson:"Participants"`
 }
 
+//MQuery Used for Various Querying Needs.
+type MQuery struct {
+	ID        primitive.ObjectID  `json:"_id,omitempty" bson:"_id,omitempty"`
+	StartTime primitive.Timestamp `json:"startTime,omitempty,string" bson:"startTime,omitempty"`
+	EndTime   primitive.Timestamp `json:"endTime,omitempty,string" bson:"endTime,omitempty"`
+	Email     string              `json:"email" bson:"email"`
+}
+
 func (u *Meeting) ServeHTTP(resp http.ResponseWriter, request *http.Request) {
 	switch request.Method {
 	case "POST":
 		addMeeting(resp, request)
 	case "GET":
 		switch request.URL.Path {
-		case "/api/meetings":
-			testaddMeeting(resp,request)
+		case "/api/meetings/":
+			testaddMeeting(resp, request)
 			break
+		case "/api/meetings/test":
+			GetMeeting(resp, request)
 		default:
 			// log.Printf(request.URL.Host)
 			// log.Printf(request.URL.Path)
@@ -82,22 +93,45 @@ func addMeeting(res http.ResponseWriter, req *http.Request) {
 
 func getMeetingsList(res http.ResponseWriter, req *http.Request) {
 
+	if req.Method != "GET" {
+		fmt.Fprintf(res, "Unsupported method '%v' to %v\n", req.Method, req.URL)
+		return
+	}
+
 }
 
 // GetMeeting Individual Meeting
 func GetMeeting(res http.ResponseWriter, req *http.Request) {
+
+	var qMeeting Meeting
+	if req.Method != "GET" {
+		fmt.Fprintf(res, "Unsupported method '%v' to %v\n", req.Method, req.URL)
+		return
+	}
+
+	// id := req.URL.Query().Get("id")
+	id, _ := primitive.ObjectIDFromHex(req.URL.Query().Get("id"))
+
+	err := collection.FindOne(context.Background(), Meeting{ID: id}).Decode(&qMeeting)
+	// if err != nil {
+	// 	log.Fatal("There is an error")
+	// }
+	fmt.Print(err)
+	json.NewEncoder(res).Encode(qMeeting)
+	// log.Print("Meeting Query: ", id)
+	// log.Print("Meeting Found: ", result)
+	fmt.Fprintf(res, "DONEEE")
 
 }
 
 func testaddMeeting(res http.ResponseWriter, req *http.Request) {
 
 	result, err := collection.InsertOne(context.Background(), bson.D{
-		{Key:"ID",Value:""}
-		{Key:"Title",Value:""}
-		{Key:"StartTime",Value:""}
-		{Key:"Participants",Value:""}
-		{Key:"EndTime",Value:""}
-		{Key:"CreatedAt",Value:""}
+		{Key: "Title", Value: "APPPLE"},
+		{Key: "StartTime", Value: primitive.Timestamp{T: uint32(time.Now().Unix())}},
+		// {Key:"Participants",Value:primitive.Timestamp{T:uint32(time.Now().Unix())}}
+		{Key: "EndTime", Value: primitive.Timestamp{T: uint32(time.Now().Unix())}},
+		{Key: "CreatedAt", Value: primitive.Timestamp{T: uint32(time.Now().Unix())}},
 	})
 	if err != nil {
 		log.Fatal("There is an error")

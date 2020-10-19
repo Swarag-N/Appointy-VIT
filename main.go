@@ -62,7 +62,7 @@ func main() {
 
 	// log.Print("All DOne Ohk")
 	// log.Print(result.InsertedID)
-	http.Handle("/api/meetings", &meeting.Meeting{})
+	http.Handle("/api/meetings/", &meeting.Meeting{})
 	http.Handle("/api/user/", &user.UserAPI{})
 	// http.HandleFunc("/api/user/add", user.AddUser)
 	// http.Handle("/api/", &api.API{})
