@@ -1,3 +1,4 @@
+// Package database provides database realted details
 package database
 
 import (
@@ -9,8 +10,10 @@ import (
 	"go.mongodb.org/mongo-driver/mongo/options"
 )
 
+// CNX provides the mongo client to other sub packages
 var CNX = Connection()
 
+// Connection holds the logic for DB Connection.
 func Connection() *mongo.Client {
 	// Set client options
 	clientOptions := options.Client().ApplyURI("mongodb://localhost:27017")
@@ -25,6 +28,7 @@ func Connection() *mongo.Client {
 	// Check the connection
 	err = client.Ping(context.TODO(), nil)
 
+	// Error Handling
 	if err != nil {
 		log.Fatal(err)
 	}
